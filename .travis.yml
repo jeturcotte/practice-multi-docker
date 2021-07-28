@@ -1,0 +1,22 @@
+sudo: required
+services:
+  - docker
+
+before_install:
+  - docker build -t jeturcotte/react-test -f ./client/Dockerfile.dev ./client
+
+script:
+  - docker run -e CI=true jeturcotte/react-test npm test -- --coverage
+
+after_success:
+  - docker build -t jeturcotte/practice-multi-client ./client
+  - docker build -t jeturcotte/practice-multi-nginx ./nginx
+  - docker build -t jeturcotte/practice-multi-server ./server
+  - docker build -t jeturcotte/practice-multi-worker ./worker
+  # log in
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
+  # push 'em to docker hub
+  - docker push jeturcotte/practice-multi-client
+  - docker push jeturcotte/practice-multi-nginx
+  - docker push jeturcotte/practice-multi-server
+  - docker push jeturcotte/practice-multi-worker
