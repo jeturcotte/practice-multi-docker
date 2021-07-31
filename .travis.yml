@@ -20,3 +20,15 @@ after_success:
   - docker push jeturcotte/practice-multi-nginx
   - docker push jeturcotte/practice-multi-server
   - docker push jeturcotte/practice-multi-worker
+
+  deploy:
+    provider: elasticbeanstalk
+    region: us-east-1
+    app: practice-multi
+    env: Practicemulti-env
+    bucket_name: elasticbeanstalk-us-east-1-719083034189'
+    bucket_path: practice-multi
+    on:
+      branch: master
+    acccess_key_id: $AWS_ACCESS_KEY
+    secret_access_key: $AWS_SECRET_KEY
